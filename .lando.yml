@@ -1,0 +1,36 @@
+name: cvmaker
+recipe: laravel
+config:
+  php: '8.0'
+  via: nginx
+  database: mysql
+  cache: none
+  xdebug: false
+  webroot: public
+  composer_version: 2-latest
+services:
+  appserver:
+    type: php:8.0
+    xdebug: debug
+    run:
+      - composer install
+      - php artisan storage:link
+  database:
+    type: mysql:8.0
+  node:
+    type: node:16
+    run:
+      - npm install
+proxy:
+  appserver_nginx:
+    - cvmaker.lndo.site
+    - cvmaker.test
+  node:
+    - bs.cvmaker.lndo.site
+    - bs.cvmaker.test
+tooling:
+  npm:
+    service: node
+  node:
+    service: node
+
